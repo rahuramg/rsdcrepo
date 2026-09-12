@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dental Dash: Tooth Defender | Educational Runner Game</title>
+    <meta name="description" content="Play Dental Dash - An exciting arcade runner game! Beat germs, collect toothbrushes, answer dental hygiene quizzes, unlock 5 levels, and top the leaderboard!">
+    
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Game Styles -->
+    <link rel="stylesheet" href="game.css">
+</head>
+<body class="game-body">
+
+    <!-- Header Navigation -->
+    <header class="game-header">
+        <a href="/" class="game-logo">
+            <i class="fa-solid fa-tooth"></i>
+            <h1>Dental Dash: Tooth Defender</h1>
+        </a>
+        <div class="header-controls">
+            <button id="soundToggleBtn" class="btn-icon" title="Toggle Sound">
+                <i class="fa-solid fa-volume-high"></i>
+            </button>
+            <button id="openHelpBtn" class="btn-header" style="background: linear-gradient(135deg, #00b4d8, #0077b6);">
+                <i class="fa-solid fa-book-open"></i> Help & Guide
+            </button>
+            <button id="openLeaderboardBtn" class="btn-header">
+                <i class="fa-solid fa-trophy"></i> Leaderboard
+            </button>
+            <a href="/" class="btn-header" style="background: rgba(255,255,255,0.2);">
+                <i class="fa-solid fa-house"></i> Clinic Home
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Game Section -->
+    <main class="game-container">
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas" width="960" height="540"></canvas>
+
+            <!-- Floating Dental Hygiene Toast Notification -->
+            <div id="dentalToast" class="dental-tip-toast">
+                <i class="fa-solid fa-lightbulb"></i>
+                <span id="toastText">Tip: Brush for 2 minutes twice every day!</span>
+            </div>
+
+            <!-- On-Canvas Level Up Banner Overlay -->
+            <div id="levelUpBanner" class="level-up-banner">
+                <h2 id="levelBannerTitle">LEVEL UP!</h2>
+                <p id="levelBannerSubtitle">Level 2: Cavity & Decay Attack</p>
+            </div>
+
+            <!-- Start Overlay -->
+            <div id="startScreen" class="overlay-screen">
+                <i class="fa-solid fa-tooth" style="font-size: 3.5rem; color: #caf0f8; margin-bottom: 12px; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8));"></i>
+                <h1 class="hero-title">TOOTH DEFENDER: DENTAL DASH</h1>
+                <p class="subtitle">Dodge decay, beat sugary germs through 5 exciting levels, collect healthy toothbrushes, and master dental hygiene skills!</p>
+
+                <div class="controls-guide">
+                    <div class="control-card">
+                        <span class="control-key">SPACE / ↑</span> Jump / Double Jump
+                    </div>
+                    <div class="control-card">
+                        <span class="control-key">↓ / DOWN</span> Duck / Slide
+                    </div>
+                    <div class="control-card">
+                        <span class="control-key">F / CLICK</span> Toothbrush Zap Attack
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+                    <button id="startGameBtn" class="btn-primary-action">
+                        <i class="fa-solid fa-play"></i> START DENTAL DASH
+                    </button>
+                    <button id="startHelpBtn" class="btn-secondary" style="border-radius: 40px; padding: 14px 28px; font-weight: 700;">
+                        <i class="fa-solid fa-book-open"></i> Game Guide
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mid-Run Dental Hygiene Quiz Modal -->
+            <div id="quizOverlay" class="overlay-screen hidden">
+                <div class="quiz-box">
+                    <div class="quiz-header">
+                        <span class="quiz-badge"><i class="fa-solid fa-graduation-cap"></i> Level Up Checkpoint</span>
+                        <span class="quiz-timer" id="quizTimer">⏱️ 10s</span>
+                    </div>
+                    <h3 class="quiz-question" id="quizQuestion">How long should you brush your teeth each session?</h3>
+                    <div class="quiz-options" id="quizOptions">
+                        <!-- Options injected dynamically -->
+                    </div>
+                    <div class="quiz-feedback" id="quizFeedback"></div>
+                </div>
+            </div>
+
+            <!-- Game Over / Dental Health Report Card -->
+            <div id="gameOverScreen" class="overlay-screen hidden">
+                <div class="report-card">
+                    <div class="report-header">
+                        <h2>DENTAL HEALTH REPORT CARD</h2>
+                        <p style="color: #64748b; font-size: 0.9rem;">Run Completed!</p>
+                    </div>
+
+                    <div class="grade-badge-container">
+                        <div class="grade-circle" id="reportGrade">S</div>
+                        <div class="grade-details">
+                            <div class="grade-title" id="reportGradeTitle">Master Fluoride Superhero</div>
+                            <div class="grade-desc" id="reportGradeDesc">Pristine enamel & outstanding hygiene habits!</div>
+                            <div style="font-size: 1.4rem; font-weight: 800; color: #03045e; margin-top: 4px;" id="reportScore">0 PTS</div>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="num" id="statMeters">0m</div>
+                            <div class="label">Distance</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="num" id="statGerms">0</div>
+                            <div class="label">Germs Defeated</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="num" id="statItems">0</div>
+                            <div class="label">Healthy Items</div>
+                        </div>
+                    </div>
+
+                    <div class="dental-advice-box">
+                        <strong><i class="fa-solid fa-user-doctor"></i> Dentist Advice:</strong>
+                        <span id="reportAdvice">Great effort! Floss daily to remove hidden food particles between teeth.</span>
+                    </div>
+
+                    <div class="name-input-group">
+                        <input type="text" id="playerNameInput" class="name-input" placeholder="Enter Champion Name (e.g., Alex)" maxlength="15">
+                        <button id="saveScoreBtn" class="btn-primary-action" style="padding: 12px 24px; font-size: 0.95rem;">
+                            Submit Score <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; justify-content: center;">
+                        <button id="restartGameBtn" class="btn-primary-action" style="padding: 12px 28px; font-size: 0.95rem;">
+                            <i class="fa-solid fa-rotate-right"></i> Play Again
+                        </button>
+                        <button id="reportViewLeaderboardBtn" class="btn-secondary" style="border-radius: 40px; padding: 12px 24px;">
+                            <i class="fa-solid fa-trophy"></i> Leaderboard
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Touch Controls -->
+        <div class="mobile-controls">
+            <div class="touch-btn-group">
+                <button id="touchSlideBtn" class="touch-btn">
+                    <i class="fa-solid fa-arrow-down"></i> SLIDE
+                </button>
+                <button id="touchJumpBtn" class="touch-btn">
+                    <i class="fa-solid fa-arrow-up"></i> JUMP
+                </button>
+            </div>
+            <button id="touchZapBtn" class="touch-btn touch-btn-zap">
+                <i class="fa-solid fa-bolt"></i> ZAP BRUSH!
+            </button>
+        </div>
+    </main>
+
+    <!-- Help & Object Encyclopedia Modal -->
+    <div id="helpModal" class="modal-backdrop hidden">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-book-open" style="color: #90e0ef;"></i> DENTAL GAME GUIDE & OBJECT ENCYCLOPEDIA</h3>
+                <button id="closeHelpBtn" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p>Welcome to <strong>Tooth Defender: Dental Dash</strong>! Learn how to play, understand all game objects, and discover real-world dental health benefits.</p>
+
+                <h3 class="modal-section-title"><i class="fa-solid fa-layer-group"></i> 5 Game Levels</h3>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;">
+                    <div style="background: #f1f5f9; padding: 10px 14px; border-radius: 12px; border-left: 4px solid #00b4d8;">
+                        <strong>Level 1: Sugar Bug Rampage (0 - 400m)</strong> – Jump over crawling sugar monsters and collect toothbrushes!
+                    </div>
+                    <div style="background: #f1f5f9; padding: 10px 14px; border-radius: 12px; border-left: 4px solid #0077b6;">
+                        <strong>Level 2: Cavity & Decay Attack (400 - 900m)</strong> – Bouncing cavity blobs appear; collect Toothpaste for Fluoride Shields!
+                    </div>
+                    <div style="background: #f1f5f9; padding: 10px 14px; border-radius: 12px; border-left: 4px solid #7209b7;">
+                        <strong>Level 3: Bacteria Swarm Sky (900 - 1500m)</strong> – Flying microbes appear; use Duck/Slide or Jump-Zap!
+                    </div>
+                    <div style="background: #f1f5f9; padding: 10px 14px; border-radius: 12px; border-left: 4px solid #fb8500;">
+                        <strong>Level 4: Acid Erosion Storm (1500 - 2200m)</strong> – Soda acid pools erode enamel; double-jump fast!
+                    </div>
+                    <div style="background: #f1f5f9; padding: 10px 14px; border-radius: 12px; border-left: 4px solid #52b788;">
+                        <strong>Level 5: Master Fluoride Kingdom (2200m+)</strong> – Ultimate speed & obstacles with score multipliers!
+                    </div>
+                </div>
+
+                <h3 class="modal-section-title"><i class="fa-solid fa-shield-heart"></i> Tooth-Friendly Collectibles</h3>
+                <div class="encyclopedia-grid">
+                    <div class="encyclopedia-card">
+                        <div class="item-icon-badge bg-friendly">🪥</div>
+                        <div class="card-content">
+                            <h4>Toothbrush (+150 PTS & Zap Refill)</h4>
+                            <div class="card-effect">Game Effect: Restores 2 Zap Laser charges.</div>
+                            <div class="card-dental-fact"><strong>Dental Fact:</strong> Brushing twice daily for 2 minutes removes 99% of dental plaque before it turns to tartar.</div>
+                        </div>
+                    </div>
+                    <div class="encyclopedia-card">
+                        <div class="item-icon-badge bg-friendly">🧴</div>
+                        <div class="card-content">
+                            <h4>Toothpaste (+200 PTS & Shield)</h4>
+                            <div class="card-effect">Game Effect: 5 Seconds Fluoride Invincibility Shield.</div>
+                            <div class="card-dental-fact"><strong>Dental Fact:</strong> Fluoride remineralizes tooth enamel and makes it resistant to sugary acid erosion.</div>
+                        </div>
+                    </div>
+                    <div class="encyclopedia-card">
+                        <div class="item-icon-badge bg-friendly">⭐</div>
+                        <div class="card-content">
+                            <h4>Dentist Badge Star (+500 PTS)</h4>
+                            <div class="card-effect">Game Effect: Massive bonus score multiplier.</div>
+                            <div class="card-dental-fact"><strong>Dental Fact:</strong> Regular 6-month checkups with Dr. Priyanka Sawant catch hidden cavities early!</div>
+                        </div>
+                    </div>
+                    <div class="encyclopedia-card">
+                        <div class="item-icon-badge bg-friendly">🍎</div>
+                        <div class="card-content">
+                            <h4>Crunchy Fresh Apple (+1 Heart HP)</h4>
+                            <div class="card-effect">Game Effect: Restores 1 Health Heart.</div>
+                            <div class="card-dental-fact"><strong>Dental Fact:</strong> Crunchy fruits stimulate saliva production which naturally cleanses tooth surfaces.</div>
+                        </div>
+                    </div>
+                    <div class="encyclopedia-card">
+                        <div class="item-icon-badge bg-friendly">🧵</div>
+                        <div class="card-content">
+                            <h4>Dental Floss (+1 Heart HP)</h4>
+                            <div class="card-effect">Game Effect: Restores 1 Health Heart.</div>
+                            <div class="card-dental-fact"><strong>Dental Fact:</strong> Flossing cleans tight spaces between teeth that toothbrush bristles cannot reach.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="modal-section-title"><i class="fa-solid fa-skull"></i> Obstacles & Germ Enemies</h3>
+                <div class="encyclopedia-grid">
+                    <div class="encyclopedia-card">
+                        <div class="item-icon-badge bg-obstacle">👾</div>
+                        <div class="card-content">
+                            <h4>Sugar Bug (Ground Crawling)</h4>
+                            <div class="card-effect">Game Danger: Causes -1 Heart damage. Jump over or Zap!</div>
+                            <div class="card-dental-fact"><strong>Dental Danger:</strong> Sugar feeds oral bacteria which produce destructive acid that dissolves enamel.</div>
+                        </div>
+                    </div>
+                    <div class="encyclopedia-card">
+                        <div class="item-icon-badge bg-obstacle">🦠</div>
+                        <div class="card-content">
+                            <h4>Decay Blob (Bouncing Cavity)</h4>
+                            <div class="card-effect">Game Danger: Causes -1 Heart damage.</div>
+                            <div class="card-dental-fact"><strong>Dental Danger:</strong> Untreated tooth decay causes painful cavities and deep root infections.</div>
+                        </div>
+                    </div>
+                    <div class="encyclopedia-card">
+                        <div class="item-icon-badge bg-obstacle">😈</div>
+                        <div class="card-content">
+                            <h4>Bacteria Swarm (Flying Microbe)</h4>
+                            <div class="card-effect">Game Danger: Flies in mid-air. Duck/Slide under or Zap!</div>
+                            <div class="card-dental-fact"><strong>Dental Danger:</strong> Plaque bacteria produce toxins that inflame gums and cause gingivitis.</div>
+                        </div>
+                    </div>
+                    <div class="encyclopedia-card">
+                        <div class="item-icon-badge bg-obstacle">🧪</div>
+                        <div class="card-content">
+                            <h4>Soda Acid Puddle (Ground Pool)</h4>
+                            <div class="card-effect">Game Danger: Floor hazard. Must double-jump over!</div>
+                            <div class="card-dental-fact"><strong>Dental Danger:</strong> Acidic sodas and energy drinks strip away protective enamel layers directly.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="modal-section-title"><i class="fa-solid fa-award"></i> Dental Hygiene Grade Definitions</h3>
+                <div class="grade-def-grid">
+                    <div class="grade-def-card grade-s">
+                        <strong>🏆 Grade S (3,500+ PTS)</strong>
+                        <p><strong>Master Fluoride Superhero:</strong> Flawless cavity dodging, perfect quiz answers, and pristine enamel!</p>
+                    </div>
+                    <div class="grade-def-card grade-a">
+                        <strong>🥇 Grade A (2,500–3,499 PTS)</strong>
+                        <p><strong>Dental Health Champion:</strong> Excellent brushing habits, strong fluoride defense, and high flossing routine!</p>
+                    </div>
+                    <div class="grade-def-card grade-b">
+                        <strong>🥈 Grade B (1,500–2,499 PTS)</strong>
+                        <p><strong>Smile Defender:</strong> Good overall care. Watch out for lingering plaque between teeth!</p>
+                    </div>
+                    <div class="grade-def-card grade-c">
+                        <strong>🥉 Grade C (800–1,499 PTS)</strong>
+                        <p><strong>Tooth Trainee:</strong> Needs more consistent 2-minute brushing twice every single day.</p>
+                    </div>
+                    <div class="grade-def-card grade-d">
+                        <strong>⚠️ Grade D (0–799 PTS)</strong>
+                        <p><strong>Cavity Risk:</strong> High sugar exposure detected! Schedule a checkup with Dr. Priyanka Sawant soon.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="closeHelpFooterBtn" class="btn-primary-action" style="padding: 10px 28px; font-size: 1rem;">
+                    Got It, Let's Play!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal Drawer -->
+    <div id="leaderboardModal" class="modal-backdrop hidden">
+        <div class="modal-dialog" style="max-width: 680px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-trophy" style="color: #ffb703;"></i> DENTAL CHAMPIONS LEADERBOARD</h3>
+                <button id="closeLeaderboardBtn" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="padding: 16px 24px;">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Defender</th>
+                            <th>Grade</th>
+                            <th>Score</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardTableBody">
+                        <!-- Entries added dynamically -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button id="clearLeaderboardBtn" class="btn-secondary" style="color: #e63946; background: #fee2e2;">
+                    <i class="fa-solid fa-trash-can"></i> Reset Hall of Fame
+                </button>
+                <button id="closeLeaderboardFooterBtn" class="btn-primary-action" style="padding: 8px 20px; font-size: 0.95rem;">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="game-footer">
+        <p>Tooth Defender: Dental Dash &copy; 2026 Root Square Dental Clinic. Designed to inspire lifelong healthy smiles!</p>
+    </footer>
+
+    <!-- Game Logic -->
+    <script src="game.js"></script>
+</body>
+</html>

@@ -23,6 +23,7 @@ export default function Navbar() {
                     <li><a href="#gallery" className="nav-link" onClick={() => setIsOpen(false)}>Gallery</a></li>
                     <li><a href="#reviews" className="nav-link" onClick={() => setIsOpen(false)}>Reviews</a></li>
                     <li><a href="#blogs" className="nav-link" onClick={() => setIsOpen(false)}>Blogs</a></li>
+                    <li><a href="#game" className="nav-link" style={{ color: '#00b4d8', fontWeight: 700 }} onClick={() => setIsOpen(false)}>🎮 Dental Game</a></li>
                     <li><a href="#contact" className="nav-link" onClick={() => setIsOpen(false)}>Contact & Location</a></li>
                     <li><a href="#contact" className="btn-primary nav-btn" onClick={() => setIsOpen(false)}>Book Appointment</a></li>
                 </ul>
