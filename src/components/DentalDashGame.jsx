@@ -12,7 +12,7 @@ export default function DentalDashGame({
   showLeaderboardInitially = false
 }) {
   const canvasRef = useRef(null);
-  const [gameState, setGameState] = useState('START'); // START, RUNNING, QUIZ, GAMEOVER
+  const [gameState, setGameState] = useState('START'); // START, RUNNING, GAMEOVER
   const [score, setScore] = useState(0);
   const [meters, setMeters] = useState(0);
   const [showLevelBanner, setShowLevelBanner] = useState(false);
@@ -24,13 +24,38 @@ export default function DentalDashGame({
   const [playerName, setPlayerName] = useState('');
   const [isMuted, setIsMuted] = useState(false);
   const [leaderboard, setLeaderboard] = useState([]);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const rootRef = useRef(null);
 
-  // Level Transition Quiz Checkpoint State
-  const [quizObj, setQuizObj] = useState(null);
-  const [quizTimer, setQuizTimer] = useState(10);
-  const [quizFeedback, setQuizFeedback] = useState('');
-  const [isAnswered, setIsAnswered] = useState(false);
-  const quizIntervalRef = useRef(null);
+  // Fullscreen toggle & change detection
+  const toggleFullscreen = () => {
+    const elem = rootRef.current || document.documentElement;
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {});
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    }
+  };
+
+  useEffect(() => {
+    const handleFSChange = () => {
+      setIsFullscreen(!!(document.fullscreenElement || document.webkitFullscreenElement));
+    };
+    document.addEventListener('fullscreenchange', handleFSChange);
+    document.addEventListener('webkitfullscreenchange', handleFSChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFSChange);
+      document.removeEventListener('webkitfullscreenchange', handleFSChange);
+    };
+  }, []);
 
   // End Game Stats
   const [reportStats, setReportStats] = useState({
@@ -105,20 +130,12 @@ export default function DentalDashGame({
     "Crunchy fruits like apples stimulate gums & boost natural saliva flow!"
   ];
 
-  const QUIZZES = [
-    { q: "How many times a day should you brush your teeth?", options: ["Once a week", "Twice a day for 2 minutes", "Only after eating candy"], correct: 1, tip: "Brushing twice a day for 2 minutes removes plaque bacteria effectively!" },
-    { q: "What component in toothpaste protects teeth from cavities?", options: ["Sugar", "Fluoride", "Food coloring"], correct: 1, tip: "Fluoride bonds with enamel to make teeth stronger against decay!" },
-    { q: "Why is flossing important for healthy teeth?", options: ["It makes teeth turn pink", "It cleans between teeth where brushes can't reach", "It is only for grown-ups"], correct: 1, tip: "Flossing cleans tight interdental spaces to prevent gum disease!" },
-    { q: "Which snack is tooth-friendly and promotes clean teeth?", options: ["Sticky Toffee", "Crunchy Fresh Apple", "Fizzy Soda"], correct: 1, tip: "Crunchy apples stimulate saliva and help scrub tooth surfaces!" },
-    { q: "How often should you replace your toothbrush?", options: ["Every 3 months", "Every 5 years", "Never"], correct: 0, tip: "Frayed bristles can't clean effectively and can harbor bacteria!" }
-  ];
-
   const LEVELS = [
-    { level: 1, title: "Level 1: Sugar Bug Rampage", targetMeters: 400, speed: 6.5, bg: "linear-gradient(to bottom, #7400b8, #6930c3, #5e60ce, #4ea8de, #90e0ef)" },
-    { level: 2, title: "Level 2: Cavity & Decay Attack", targetMeters: 900, speed: 8.0, bg: "linear-gradient(to bottom, #4c1d95, #5b21b6, #1e40af, #0284c7, #38bdf8)" },
-    { level: 3, title: "Level 3: Bacteria Swarm Sky", targetMeters: 1500, speed: 9.5, bg: "linear-gradient(to bottom, #831843, #9d174d, #991b1b, #c2410c, #fb923c)" },
-    { level: 4, title: "Level 4: Acid Erosion Storm", targetMeters: 2200, speed: 11.0, bg: "linear-gradient(to bottom, #064e3b, #047857, #0f766e, #0284c7, #7dd3fc)" },
-    { level: 5, title: "Level 5: Master Fluoride Kingdom", targetMeters: 99999, speed: 12.5, bg: "linear-gradient(to bottom, #0f172a, #1e1b4b, #312e81, #4338ca, #818cf8)" }
+    { level: 1, title: "Level 1: Sugar Bug Rampage", targetMeters: 400, speed: 6.0, obsChance: 0.012, maxObs: 2, itemChance: 0.012, maxItems: 2, bg: "linear-gradient(to bottom, #7400b8, #6930c3, #5e60ce, #4ea8de, #90e0ef)" },
+    { level: 2, title: "Level 2: Cavity & Decay Attack", targetMeters: 900, speed: 7.5, obsChance: 0.016, maxObs: 3, itemChance: 0.015, maxItems: 2, bg: "linear-gradient(to bottom, #4c1d95, #5b21b6, #1e40af, #0284c7, #38bdf8)" },
+    { level: 3, title: "Level 3: Bacteria Swarm Sky", targetMeters: 1500, speed: 9.0, obsChance: 0.020, maxObs: 3, itemChance: 0.018, maxItems: 3, bg: "linear-gradient(to bottom, #831843, #9d174d, #991b1b, #c2410c, #fb923c)" },
+    { level: 4, title: "Level 4: Acid Erosion Storm", targetMeters: 2200, speed: 10.5, obsChance: 0.024, maxObs: 4, itemChance: 0.021, maxItems: 3, bg: "linear-gradient(to bottom, #064e3b, #047857, #0f766e, #0284c7, #7dd3fc)" },
+    { level: 5, title: "Level 5: Master Fluoride Kingdom", targetMeters: 99999, speed: 12.0, obsChance: 0.028, maxObs: 4, itemChance: 0.025, maxItems: 3, bg: "linear-gradient(to bottom, #0f172a, #1e1b4b, #312e81, #4338ca, #818cf8)" }
   ];
 
   // --- Leaderboard Storage ---
@@ -219,25 +236,32 @@ export default function DentalDashGame({
   const zapPlayer = () => {
     const e = engineRef.current;
     const p = playerRef.current;
-    if (e.zapCharges > 0 && !p.isZapping) {
-      e.zapCharges--;
-      p.isZapping = true;
-      p.zapTimer = 20;
-      soundZap();
-      // Zap Beam Destruction
-      for (let i = 0; i < e.obstacles.length; i++) {
-        const obs = e.obstacles[i];
-        if (obs.x > p.x && obs.x < p.x + 500 && Math.abs((p.y + 30) - obs.y) < 100) {
-          createSparkles(obs.x + obs.width / 2, obs.y + obs.height / 2, '#ffb703', 25);
-          e.score += 150;
-          e.germsDefeated++;
-          soundGermDestroy();
-          e.floatingTexts.push({ x: obs.x, y: obs.y, text: '+150 ZAPPED!', color: '#ffb703', life: 45, maxLife: 45 });
-          showToastMsg("Toothbrush Zap destroyed harmful bacteria!");
-          e.obstacles.splice(i, 1);
-          i--;
+    if (e.zapCharges > 0) {
+      if (!p.isZapping) {
+        e.zapCharges--;
+        p.isZapping = true;
+        p.zapTimer = 20;
+        soundZap();
+        let hitAny = false;
+        // Zap Beam Destruction
+        for (let i = 0; i < e.obstacles.length; i++) {
+          const obs = e.obstacles[i];
+          if (obs.x > p.x && obs.x < p.x + 500 && Math.abs((p.y + 30) - obs.y) < 100) {
+            createSparkles(obs.x + obs.width / 2, obs.y + obs.height / 2, '#ffb703', 25);
+            e.score += 150;
+            e.germsDefeated++;
+            soundGermDestroy();
+            e.floatingTexts.push({ x: obs.x, y: obs.y, text: '+150 FLASH ZAPPED!', color: '#ffb703', life: 45, maxLife: 45 });
+            e.obstacles.splice(i, 1);
+            i--;
+            hitAny = true;
+          }
         }
+        showToastMsg(hitAny ? "⚡ Toothbrush Zap Flash destroyed bacteria!" : "⚡ Toothbrush Zap Flash released!");
       }
+    } else {
+      soundHurt();
+      showToastMsg("🪥 Out of Zap Flash charges! Collect Toothbrushes to refill!");
     }
   };
 
@@ -319,74 +343,9 @@ export default function DentalDashGame({
     e.collectibles = [];
     e.particles = [];
     e.floatingTexts = [];
-    e.levelQuizPending = false;
     p.y = 340;
     p.velocityY = 0;
 
-    setGameState('RUNNING');
-  };
-
-  // Trigger Level Transition Quiz (Asked ONLY when advancing levels!)
-  const triggerLevelQuiz = () => {
-    const e = engineRef.current;
-    e.mode = 'QUIZ';
-    e.levelQuizPending = true;
-    const qObj = QUIZZES[Math.floor(Math.random() * QUIZZES.length)];
-    setQuizObj(qObj);
-    setQuizTimer(10);
-    setQuizFeedback('');
-    setIsAnswered(false);
-    setGameState('QUIZ');
-
-    if (quizIntervalRef.current) clearInterval(quizIntervalRef.current);
-    quizIntervalRef.current = setInterval(() => {
-      setQuizTimer(prev => {
-        if (prev <= 1) {
-          clearInterval(quizIntervalRef.current);
-          completeLevelTransition(false, "Time expired! Brushing 2x daily keeps teeth strong!");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  };
-
-  const handleQuizAnswer = (selectedIdx) => {
-    if (isAnswered) return;
-    setIsAnswered(true);
-    if (quizIntervalRef.current) clearInterval(quizIntervalRef.current);
-
-    const e = engineRef.current;
-    if (selectedIdx === quizObj.correct) {
-      soundQuizCorrect();
-      setQuizFeedback("✅ Correct! +300 PTS & Fluoride Shield Awarded!");
-      e.score += 300;
-      e.shieldTimer = 300;
-      setTimeout(() => completeLevelTransition(true, quizObj.tip), 1500);
-    } else {
-      soundHurt();
-      setQuizFeedback(`❌ Keep learning! ${quizObj.tip}`);
-      setTimeout(() => completeLevelTransition(false, quizObj.tip), 2000);
-    }
-  };
-
-  const completeLevelTransition = (isCorrect, tip) => {
-    const e = engineRef.current;
-    showToastMsg(tip);
-
-    // Advance Level
-    if (e.currentLevelIdx < LEVELS.length - 1) {
-      e.currentLevelIdx++;
-      const newLvl = LEVELS[e.currentLevelIdx];
-      e.speed = newLvl.speed;
-      soundLevelUp();
-      setLevelBannerInfo({ title: `LEVEL ${newLvl.level} UNLOCKED!`, subtitle: newLvl.title });
-      setShowLevelBanner(true);
-      setTimeout(() => setShowLevelBanner(false), 3000);
-    }
-
-    e.levelQuizPending = false;
-    e.mode = 'RUNNING';
     setGameState('RUNNING');
   };
 
@@ -407,11 +366,17 @@ export default function DentalDashGame({
         setScore(e.score);
         setMeters(Math.floor(e.meters));
 
-        // Check Level Transition Quiz Condition (ONLY when reaching next level target & no quiz pending)
+        // Seamless Level Advancement (No Quiz)
         const currentLvl = LEVELS[e.currentLevelIdx];
-        if (e.meters >= currentLvl.targetMeters && e.currentLevelIdx < LEVELS.length - 1 && !e.levelQuizPending) {
-          triggerLevelQuiz();
-          return;
+        if (e.meters >= currentLvl.targetMeters && e.currentLevelIdx < LEVELS.length - 1) {
+          e.currentLevelIdx++;
+          const newLvl = LEVELS[e.currentLevelIdx];
+          e.speed = newLvl.speed;
+          soundLevelUp();
+          setLevelBannerInfo({ title: `LEVEL ${newLvl.level} UNLOCKED!`, subtitle: newLvl.title });
+          setShowLevelBanner(true);
+          setTimeout(() => setShowLevelBanner(false), 3000);
+          showToastMsg(`🚀 Level ${newLvl.level} Unlocked! Speed & Challenge Increased!`);
         }
 
         // Shield timer
@@ -433,8 +398,8 @@ export default function DentalDashGame({
         }
         p.animFrame += 0.2;
 
-        // Spawn obstacles
-        if (Math.random() < 0.016 && e.obstacles.length < 3) {
+        // Spawn obstacles based on level difficulty curve
+        if (Math.random() < currentLvl.obsChance && e.obstacles.length < currentLvl.maxObs) {
           const types = ['sugar_bug', 'decay_blob', 'bacteria_swarm', 'acid_puddle'];
           const type = types[Math.floor(Math.random() * types.length)];
           let y = 365;
@@ -444,8 +409,8 @@ export default function DentalDashGame({
           e.obstacles.push({ type, x: 980, y, width: w, height: h });
         }
 
-        // Spawn collectibles
-        if (Math.random() < 0.013 && e.collectibles.length < 2) {
+        // Spawn collectibles based on level rewards curve
+        if (Math.random() < currentLvl.itemChance && e.collectibles.length < currentLvl.maxItems) {
           const items = ['toothbrush', 'toothpaste', 'dentist_badge', 'apple', 'floss'];
           const type = items[Math.floor(Math.random() * items.length)];
           e.collectibles.push({ type, x: 980, y: Math.random() > 0.4 ? 280 : 355, width: 55, height: 55, floatAnim: 0 });
@@ -723,7 +688,7 @@ export default function DentalDashGame({
   }, []);
 
   return (
-    <div className="dental-game-react-root">
+    <div ref={rootRef} className={`dental-game-react-root ${isFullscreen ? 'is-fullscreen' : ''}`}>
       {/* Header Navigation */}
       <header className="react-game-header">
         <div className="react-game-title">
@@ -731,7 +696,16 @@ export default function DentalDashGame({
           <span>Tooth Defender: Dental Dash</span>
         </div>
         <div className="react-header-btns">
-          <button className="react-btn-icon" onClick={() => setIsMuted(!isMuted)}>
+          <button 
+            className={`react-btn ${isFullscreen ? 'react-btn-active' : ''}`}
+            onClick={toggleFullscreen}
+            title={isFullscreen ? "Exit Full Screen Mode" : "Play Full Screen Mode"}
+            style={{ background: isFullscreen ? 'linear-gradient(135deg, #ffb703, #fb8500)' : undefined }}
+          >
+            <i className={`fa-solid ${isFullscreen ? 'fa-compress' : 'fa-expand'}`}></i>
+            <span>{isFullscreen ? 'Exit Fullscreen' : 'Fullscreen Mode'}</span>
+          </button>
+          <button className="react-btn-icon" onClick={() => setIsMuted(!isMuted)} title={isMuted ? "Unmute Sound" : "Mute Sound"}>
             <i className={`fa-solid ${isMuted ? 'fa-volume-xmark' : 'fa-volume-high'}`}></i>
           </button>
           <button className="react-btn" onClick={() => setShowHelpModal(true)}>
@@ -749,6 +723,12 @@ export default function DentalDashGame({
           className="react-canvas-wrapper"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
+          onClick={() => {
+            if (engineRef.current.mode === 'RUNNING') {
+              zapPlayer();
+            }
+          }}
+          style={{ cursor: gameState === 'RUNNING' ? 'crosshair' : 'default' }}
         >
           <canvas ref={canvasRef} width="960" height="540" />
 
@@ -783,7 +763,7 @@ export default function DentalDashGame({
                   <span style={{ background: '#fff', color: '#03045e', padding: '4px 8px', borderRadius: 6, fontWeight: 700 }}>↓ / DOWN</span> Duck / Slide
                 </div>
                 <div style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.25)', padding: '10px 16px', borderRadius: 12 }}>
-                  <span style={{ background: '#fff', color: '#03045e', padding: '4px 8px', borderRadius: 6, fontWeight: 700 }}>F / CLICK</span> Toothbrush Zap Attack
+                  <span style={{ background: '#fff', color: '#03045e', padding: '4px 8px', borderRadius: 6, fontWeight: 700 }}>F / CLICK</span> Toothbrush Zap Flash
                 </div>
               </div>
 
@@ -794,33 +774,6 @@ export default function DentalDashGame({
                 <button className="react-btn" onClick={() => setShowHelpModal(true)} style={{ borderRadius: 40, padding: '14px 28px', background: 'rgba(255,255,255,0.2)' }}>
                   <i className="fa-solid fa-book-open"></i> Game Guide
                 </button>
-              </div>
-            </div>
-          )}
-
-          {/* Level Transition Quiz Overlay */}
-          {gameState === 'QUIZ' && quizObj && (
-            <div className="react-overlay">
-              <div className="react-quiz-box">
-                <div className="react-quiz-header">
-                  <span className="react-quiz-badge"><i className="fa-solid fa-graduation-cap"></i> Level Up Checkpoint</span>
-                  <span className="react-quiz-timer">⏱️ {quizTimer}s</span>
-                </div>
-                <h3 className="react-quiz-question">{quizObj.q}</h3>
-                <div className="react-quiz-options">
-                  {quizObj.options.map((opt, idx) => (
-                    <button 
-                      key={idx} 
-                      className={`react-quiz-opt-btn ${isAnswered ? (idx === quizObj.correct ? 'correct' : 'wrong') : ''}`}
-                      disabled={isAnswered}
-                      onClick={() => handleQuizAnswer(idx)}
-                    >
-                      <span style={{ width: 28, height: 28, borderRadius: '50%', background: '#e2e8f0', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>{String.fromCharCode(65 + idx)}</span>
-                      {opt}
-                    </button>
-                  ))}
-                </div>
-                {quizFeedback && <div style={{ fontWeight: 600, marginTop: 8 }}>{quizFeedback}</div>}
               </div>
             </div>
           )}
@@ -864,10 +817,23 @@ export default function DentalDashGame({
                   <button className="react-btn" onClick={handleSaveScore}>Submit Score</button>
                 </div>
 
-                <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-                  <button className="react-btn" onClick={startGame} style={{ borderRadius: 40, padding: '12px 28px' }}>
+                <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+                  <button className="react-btn" onClick={startGame} style={{ borderRadius: 40, padding: '12px 28px', fontSize: '1rem' }}>
                     <i className="fa-solid fa-rotate-right"></i> Play Again
                   </button>
+                  <a 
+                    href="#contact" 
+                    onClick={(e) => {
+                      const contactElem = document.getElementById('contact');
+                      if (contactElem) {
+                        contactElem.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }}
+                    className="react-btn" 
+                    style={{ borderRadius: 40, padding: '12px 28px', fontSize: '1rem', background: 'linear-gradient(135deg, #00b4d8, #48cae4)', color: '#03045e', textDecoration: 'none', fontWeight: 800, boxShadow: '0 4px 15px rgba(0, 180, 216, 0.4)' }}
+                  >
+                    📅 Book Appointment
+                  </a>
                   <button className="react-btn" onClick={() => setShowLeaderboardModal(true)} style={{ borderRadius: 40, padding: '12px 24px', background: '#e2e8f0', color: '#334155' }}>
                     <i className="fa-solid fa-trophy"></i> Leaderboard
                   </button>
@@ -877,18 +843,30 @@ export default function DentalDashGame({
           )}
         </div>
 
-        {/* Mobile Touch Controls */}
+        {/* Mobile Touch & Click Controls */}
         <div className="react-mobile-controls">
           <div className="react-touch-btn-group">
-            <button className="react-touch-btn" onClick={jumpPlayer}>
+            <button 
+              className="react-touch-btn" 
+              onClick={(e) => { e.stopPropagation(); jumpPlayer(); }}
+              onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); jumpPlayer(); }}
+            >
               <i className="fa-solid fa-arrow-up"></i> JUMP
             </button>
-            <button className="react-touch-btn" onClick={() => { duckPlayer(true); setTimeout(() => duckPlayer(false), 700); }}>
+            <button 
+              className="react-touch-btn" 
+              onClick={(e) => { e.stopPropagation(); duckPlayer(true); setTimeout(() => duckPlayer(false), 700); }}
+              onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); duckPlayer(true); setTimeout(() => duckPlayer(false), 700); }}
+            >
               <i className="fa-solid fa-arrow-down"></i> SLIDE
             </button>
           </div>
-          <button className="react-touch-btn react-touch-btn-zap" onClick={zapPlayer}>
-            <i className="fa-solid fa-bolt"></i> ZAP BRUSH!
+          <button 
+            className="react-touch-btn react-touch-btn-zap" 
+            onClick={(e) => { e.stopPropagation(); zapPlayer(); }}
+            onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); zapPlayer(); }}
+          >
+            <i className="fa-solid fa-bolt"></i> RELEASE FLASH!
           </button>
         </div>
       </main>
