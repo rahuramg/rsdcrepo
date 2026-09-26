@@ -1,0 +1,667 @@
+/* DentalSurgeonGame.css - Ultra Graphical & High Contrast Edition */
+
+.dental-surgeon-container {
+  max-width: 1050px;
+  margin: 0 auto;
+  background: #0f172a;
+  color: #f8fafc;
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.ds-header {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  padding: 16px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 3px solid #334155;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ds-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ds-score-badge {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #000;
+  padding: 6px 16px;
+  border-radius: 30px;
+  font-weight: 900;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+/* Doctor Registration Screen */
+.ds-welcome-screen {
+  padding: 40px 20px;
+  max-width: 520px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.ds-doctor-avatar-large {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #38bdf8, #0284c7);
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(56, 189, 248, 0.5);
+  border: 4px solid #fff;
+}
+
+/* Dual Avatars & Speech Bubbles */
+.ds-dual-avatar-scene {
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 15px;
+  border: 2px solid #334155;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+}
+
+@media (max-width: 680px) {
+  .ds-dual-avatar-scene {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.ds-avatar-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 110px;
+}
+
+.ds-avatar-circle {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0284c7, #38bdf8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  border: 3px solid #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+}
+
+.ds-avatar-circle.patient {
+  background: linear-gradient(135deg, #ec4899, #f43f5e);
+}
+
+.ds-avatar-name {
+  margin-top: 6px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: #38bdf8;
+}
+
+.ds-avatar-name.patient {
+  color: #f43f5e;
+}
+
+/* Dual Speech Bubbles with White Background & Bold Black Text */
+.ds-dialogue-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ds-bubble-doctor {
+  background: #ffffff;
+  border: 3px solid #0284c7;
+  border-radius: 18px;
+  padding: 12px 18px;
+  color: #000000;
+  font-size: 0.98rem;
+  font-weight: 800;
+  line-height: 1.4;
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.3);
+}
+
+.ds-bubble-patient {
+  background: #ffffff;
+  border: 3px solid #f43f5e;
+  border-radius: 18px;
+  padding: 10px 16px;
+  color: #000000;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.4;
+  box-shadow: 0 6px 18px rgba(244, 63, 94, 0.3);
+}
+
+/* HIGH CONTRAST QUESTIONNAIRE & QUIZ BUBBLES */
+.ds-questionnaire-card {
+  background: #ffffff;
+  border: 4px solid #38bdf8;
+  border-radius: 20px;
+  padding: 20px 25px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  color: #000000;
+}
+
+.ds-questionnaire-title {
+  margin: 0 0 10px;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #03045e;
+}
+
+.ds-questionnaire-sub {
+  margin: 0 0 15px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.ds-diag-btn {
+  background: #ffffff;
+  color: #000000;
+  border: 3px solid #0f172a;
+  padding: 14px 20px;
+  border-radius: 16px;
+  text-align: left;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  width: 100%;
+}
+
+.ds-diag-btn:hover, .ds-diag-btn:active {
+  border-color: #0284c7;
+  background: #f0f9ff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.3);
+}
+
+.ds-diag-btn.correct {
+  background: #dcfce7;
+  border-color: #16a34a;
+  color: #14532d;
+}
+
+.ds-diag-btn.wrong {
+  background: #fee2e2;
+  border-color: #dc2626;
+  color: #7f1d1d;
+}
+
+/* Patient Hub Cards */
+.ds-patient-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.ds-patient-card {
+  background: #1e293b;
+  border-radius: 18px;
+  padding: 20px;
+  border: 3px solid #334155;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ds-patient-card:hover {
+  border-color: #38bdf8;
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(56, 189, 248, 0.3);
+}
+
+.ds-patient-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.ds-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.ds-patient-name {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: #f1f5f9;
+  margin: 0;
+}
+
+.ds-patient-complaint {
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  line-height: 1.4;
+  margin-bottom: 15px;
+}
+
+.ds-treatment-tag {
+  display: inline-block;
+  background: rgba(14, 165, 233, 0.25);
+  color: #38bdf8;
+  padding: 4px 12px;
+  border-radius: 14px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* Surgery Room Layout */
+.ds-surgery-layout {
+  display: grid;
+  grid-template-columns: 290px 1fr;
+  min-height: 520px;
+}
+
+@media (max-width: 850px) {
+  .ds-surgery-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ds-tools-panel {
+  background: #1e293b;
+  border-right: 3px solid #334155;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (max-width: 850px) {
+  .ds-tools-panel {
+    border-right: none;
+    border-bottom: 3px solid #334155;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 12px;
+  }
+}
+
+.ds-tool-card {
+  background: #0f172a;
+  border: 3px solid #334155;
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  touch-action: manipulation;
+}
+
+@media (max-width: 850px) {
+  .ds-tool-card {
+    min-width: 210px;
+    flex-shrink: 0;
+  }
+}
+
+.ds-tool-card.active {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.2);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+  transform: scale(1.03);
+}
+
+.ds-tool-card.completed {
+  opacity: 0.5;
+  border-color: #22c55e;
+}
+
+.ds-tool-icon {
+  font-size: 1.8rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1e293b;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.ds-tool-name {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #f1f5f9;
+}
+
+.ds-tool-action {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+/* Operating Canvas & Tooth Stage */
+.ds-canvas-area {
+  background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  align-items: center;
+}
+
+.ds-mouth-stage {
+  width: 100%;
+  max-width: 480px;
+  height: 250px;
+  background: #3a1515;
+  border: 8px solid #5c1d1d;
+  border-radius: 120px / 70px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 50px rgba(0,0,0,0.9), 0 10px 30px rgba(0,0,0,0.6);
+  margin: 10px 0;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.ds-gums {
+  width: 92%;
+  height: 78%;
+  background: #a33232;
+  border-radius: 100px / 55px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  padding: 10px;
+}
+
+.ds-tooth-unit {
+  width: 56px;
+  height: 78px;
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+  border-radius: 14px 14px 22px 22px;
+  box-shadow: inset -4px -4px 8px rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.3);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ds-tooth-unit.target {
+  box-shadow: 0 0 25px #38bdf8, inset -4px -4px 8px rgba(0,0,0,0.15);
+  animation: pulseTarget 1.5s infinite;
+}
+
+.ds-tooth-unit.operating {
+  animation: wobbleTooth 0.3s infinite;
+}
+
+@keyframes wobbleTooth {
+  0% { transform: scale(1.08) rotate(0deg); }
+  25% { transform: scale(1.08) rotate(-3deg); }
+  75% { transform: scale(1.08) rotate(3deg); }
+  100% { transform: scale(1.08) rotate(0deg); }
+}
+
+.ds-tartar-layer {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, #78350f 50%, #92400e 90%);
+  border-radius: 14px 14px 22px 22px;
+  transition: opacity 0.3s ease;
+}
+
+.ds-decay-pit {
+  width: 20px;
+  height: 20px;
+  background: #18181b;
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: inset 0 0 6px #000;
+}
+
+.ds-pulp-nerve {
+  width: 10px;
+  height: 30px;
+  background: #ef4444;
+  border-radius: 4px;
+  position: absolute;
+}
+
+.ds-gutta-fill {
+  width: 14px;
+  height: 35px;
+  background: #dc2626;
+  border-radius: 6px;
+  position: absolute;
+}
+
+.ds-crown-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #ffffff, #e2e8f0);
+  border: 3px solid #38bdf8;
+  border-radius: 14px 14px 22px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #03045e;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+}
+
+.ds-bracket-overlay {
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, #94a3b8, #cbd5e1);
+  border: 2px solid #334155;
+  border-radius: 4px;
+  position: absolute;
+}
+
+.ds-archwire-overlay {
+  position: absolute;
+  height: 4px;
+  background: linear-gradient(90deg, #94a3b8, #fff, #94a3b8);
+  width: 120%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+}
+
+.ds-elastic-band-overlay {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid #ec4899;
+  position: absolute;
+  z-index: 6;
+}
+
+.ds-implant-screw-overlay {
+  width: 18px;
+  height: 45px;
+  background: repeating-linear-gradient(0deg, #64748b, #64748b 4px, #334155 4px, #334155 8px);
+  border-radius: 4px;
+}
+
+.ds-bridge-unit-overlay {
+  position: absolute;
+  top: -8px;
+  left: -12px;
+  right: -12px;
+  bottom: -8px;
+  background: linear-gradient(135deg, #ffffff, #f1f5f9);
+  border: 3px solid #0ea5e9;
+  border-radius: 18px;
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #0284c7;
+}
+
+.ds-sound-effect-bubble {
+  position: absolute;
+  top: -35px;
+  background: #f59e0b;
+  color: #000;
+  font-weight: 900;
+  font-size: 0.9rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  animation: popSound 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popSound {
+  0% { transform: scale(0.5) translateY(10px); }
+  100% { transform: scale(1.1) translateY(0); }
+}
+
+.ds-hold-btn {
+  background: linear-gradient(135deg, #00b4d8, #0077b6);
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 1.15rem;
+  padding: 16px 36px;
+  border-radius: 40px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(0, 180, 216, 0.4);
+  touch-action: manipulation;
+  transition: transform 0.1s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ds-hold-btn:active, .ds-hold-btn.holding {
+  transform: scale(0.96);
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.6);
+}
+
+.ds-progress-bar-wrap {
+  width: 100%;
+  max-width: 480px;
+  height: 16px;
+  background: #1e293b;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #334155;
+  margin-top: 12px;
+}
+
+.ds-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b, #38bdf8, #22c55e);
+  transition: width 0.1s linear;
+}
+
+/* Leaderboard */
+.ds-leaderboard-card {
+  background: #1e293b;
+  border-radius: 20px;
+  padding: 25px;
+  max-width: 650px;
+  margin: 25px auto;
+  border: 2px solid #334155;
+}
+
+.ds-lb-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.ds-lb-table th {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 2px solid #334155;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.ds-lb-table td {
+  padding: 12px;
+  border-bottom: 1px solid #1e293b;
+  font-size: 0.95rem;
+}
+
+.ds-rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-weight: 900;
+  font-size: 0.85rem;
+}
+
+.ds-rank-1 { background: #eab308; color: #422006; }
+.ds-rank-2 { background: #94a3b8; color: #0f172a; }
+.ds-rank-3 { background: #b45309; color: #fff; }
+
+.ds-btn-primary {
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  color: #ffffff;
+  font-weight: 800;
+  padding: 14px 32px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 6px 18px rgba(14, 165, 233, 0.4);
+  touch-action: manipulation;
+}
+
+.ds-btn-primary:hover, .ds-btn-primary:active {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(14, 165, 233, 0.6);
+}
